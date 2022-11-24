@@ -2,6 +2,7 @@ package com.example.mynotes.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity
@@ -20,8 +21,20 @@ public class Note {
     @ColumnInfo(name = "date")
     private String date;
 
-    //constructor tanpa id karena di generate auto increment
+    @Ignore
+    public Note(){
+
+    }
+
     public Note(String title, String description, String date) {
+        this.title = title;
+        this.description = description;
+        this.date = date;
+    }
+
+    //constructor tanpa id karena di generate auto increment
+    @Ignore
+    public Note(int id, String title, String description, String date) {
         this.id = id;
         this.title = title;
         this.description = description;

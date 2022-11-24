@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private Button btnAddNote, btnEditNote;
     private EditText edtTitle, edtDesc, edtDate;
-    private int id;
+    private int idItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +57,25 @@ public class MainActivity extends AppCompatActivity {
         });
         getAllNotes();
 
-        listView.setOnItemClickListener(new View.OnClickListener() {
+        btnEditNote.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(View v) {
+            public void onClick(View v) {
+                String title = edtTitle.getText().toString();
+                String desc = edtDesc.getText().toString();
+                String date = edtDate.getText().toString();
+                updateData(new Note(idItem, title, desc, date));
+                setEmptyField();
+            }
+        });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Note item = (Note) parent.getAdapter().getItem(position);
+                idItem = item.getId();
+                edtTitle.setText(item.getTitle());
+                edtDesc.setText(item.getDescription());
+                edtDate.setText(item.getDate());
             }
         });
     }
@@ -86,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     //function update data
     private void updateData(Note note){
-
+        executorService.execute(() -> noteDao.update(note));
     }
 
     //function hapus data
