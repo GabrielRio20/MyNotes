@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private NoteDao noteDao;
     private ExecutorService executorService;
     private ListView listView;
-    private Button btnAddNote, btnEditNote;
+    private Button btnAddNote, btnEditNote, btnClearField;
     private EditText edtTitle, edtDesc, edtDate;
     private int idItem = 0;
 
@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.lv_notes);
         btnAddNote = findViewById(R.id.btn_add_note);
         btnEditNote = findViewById(R.id.btn_update_note);
+        btnClearField = findViewById(R.id.btn_clear_field);
 
         edtTitle = findViewById(R.id.edt_title);
         edtDesc = findViewById(R.id.edt_description);
@@ -44,6 +45,13 @@ public class MainActivity extends AppCompatActivity {
 
         NoteRoomDatabase db = NoteRoomDatabase.getDatabase(this);
         noteDao = db.noteDao();
+
+        btnClearField.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setEmptyField();
+            }
+        });
 
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +86,15 @@ public class MainActivity extends AppCompatActivity {
                 edtDate.setText(item.getDate());
             }
         });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Note item = (Note) parent.getAdapter().getItem(position);
+                deleteData(item);
+                return true;
+            }
+        });
     }
 
     private void setEmptyField(){
@@ -107,6 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
     //function hapus data
     private void deleteData(Note note){
-
+        executorService.execute(() -> noteDao.delete(note));
     }
 }

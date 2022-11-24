@@ -28,6 +28,13 @@
         android:hint="Date"/>
 
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/btn_clear_field"
+        android:text="Clear"/>
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Note"
